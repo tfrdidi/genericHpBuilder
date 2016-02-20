@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
+    <application>genericHpBuilder</application>
+    <version>1alpha</version>
+    <threadsafe>true</threadsafe>
+    <static-files>
+        <include path="/favicon.ico" expiration="1h" />
+    </static-files>
+</appengine-web-app>
