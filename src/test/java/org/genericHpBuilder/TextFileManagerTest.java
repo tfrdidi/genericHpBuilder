@@ -31,11 +31,27 @@ public class TextFileManagerTest {
 
     @Test
     public void testAddAndGet() {
-        textFileManager.addTextFile(textFile);
+        textFileManager.updateTextFile(textFile);
         TextFile result = textFileManager.getTextFile("t");
 
         assertNotNull(result);
         assertTrue("t".equals(result.getTextFileName()));
         assertEquals(TextFileType.HTML, result.getTextFileType());
+    }
+
+    @Test
+    public void testDeleted() {
+        textFileManager.updateTextFile(textFile);
+        TextFile testTextFile = textFileManager.getTextFile(textFile.getTextFileName());
+        assertNotNull(testTextFile);
+
+        textFileManager.deleteTextFile(textFile.getTextFileName());
+        testTextFile = textFileManager.getTextFile(textFile.getTextFileName());
+        assertNull(testTextFile);
+
+        textFile = new TextFile("t", TextFileType.HTML);
+        textFileManager.updateTextFile(textFile);
+        testTextFile = textFileManager.getTextFile(textFile.getTextFileName());
+        assertNotNull(testTextFile);
     }
 }

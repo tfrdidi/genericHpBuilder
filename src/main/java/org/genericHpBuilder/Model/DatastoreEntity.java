@@ -12,6 +12,8 @@ public abstract class DatastoreEntity implements Persistent, Serializable{
     @Id
     protected Long id;
 
+    protected boolean deleted;
+
     /**
      *
      */
@@ -36,5 +38,15 @@ public abstract class DatastoreEntity implements Persistent, Serializable{
      */
     public final void incWriteCount() {
         writeCount++;
+    }
+
+
+    public final boolean isDeleted() {
+        return deleted;
+    }
+
+    public final void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+        incWriteCount();
     }
 }

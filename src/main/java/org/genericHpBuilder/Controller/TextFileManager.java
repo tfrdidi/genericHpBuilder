@@ -8,12 +8,34 @@ import org.genericHpBuilder.Model.TextFile;
  */
 public class TextFileManager extends ObjectManager{
 
-    public void addTextFile(TextFile newTextFile) {
+    /**
+     * Adds or modifies a text file
+     */
+    public void updateTextFile(TextFile newTextFile) {
+        deleteObjects(TextFile.class, "textFileName", newTextFile.getTextFileName());
         writeObject(newTextFile);
     }
 
+    /**
+     * Returns a specific text file or null if it does not exist or was deleted.
+     */
     public TextFile getTextFile(String textFileName) {
-        return readObject(TextFile.class, TextFile.PROPERTY_TEXT_FILE_NAME, textFileName);
+        TextFile result =  readObject(TextFile.class, TextFile.PROPERTY_TEXT_FILE_NAME, textFileName);
+        if(result != null && !result.isDeleted()) {
+            return result;
+        }
+        else {
+            return null;
+        }
+    }
+
+    public void deleteTextFile(String textFileName) {
+        TextFile textFile = getTextFile(textFileName);
+        if (textFile == null)
+            throw new IllegalArgumentException("No such text file known.");
+
+        textFile.setDeleted(true);
+        updateTextFile(textFile);
     }
 
 }
