@@ -1,0 +1,50 @@
+group 'hpBuilder'
+version '1alpha'
+
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'appengine'
+
+buildscript {
+    ext {
+        gaeVersion = '1.9.28'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.google.appengine:gradle-appengine-plugin:' + gaeVersion
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    appengineSdk 'com.google.appengine:appengine-java-sdk:1.9.30'
+
+    compile 'com.google.appengine:appengine-api-1.0-sdk:1.9.30'
+    compile 'javax.servlet:servlet-api:2.5' // GAE works with only with 2.5
+    compile 'com.googlecode.objectify:objectify:5.1.10'
+    compile 'org.slf4j:slf4j-jdk14:1.7.12'
+
+    // testing dependencies
+    testCompile 'com.google.appengine:appengine-testing:' + gaeVersion
+    testCompile 'com.google.appengine:appengine-api-stubs:' + gaeVersion
+    testCompile 'com.google.appengine:appengine-api-labs:' + gaeVersion
+    testCompile 'com.google.appengine:appengine-tools-sdk:1.9.30'
+    testCompile 'junit:junit:4.+'
+}
+
+
+appengine {
+    httpPort = 8080
+    downloadSdk = true
+    jvmFlags = ['-Xdebug', '-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8000']
+
+    appcfg {
+        oauth2 = true
+        noCookies = false
+    }
+}
