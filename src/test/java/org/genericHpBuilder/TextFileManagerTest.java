@@ -3,6 +3,7 @@ package org.genericHpBuilder;
 import org.genericHpBuilder.Controller.TextFileManager;
 import org.genericHpBuilder.Model.TextFile;
 import org.genericHpBuilder.Model.TextFileType;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -18,6 +19,8 @@ public class TextFileManagerTest {
 
     private TextFileManager textFileManager;
     private TextFile textFile;
+    private String textFileName1 = "t";
+    private String textFileName2 = "n";
 
     @Rule
     public TestRule chain = RuleChain.
@@ -26,16 +29,21 @@ public class TextFileManagerTest {
     @Before
     public void before() {
         textFileManager = new TextFileManager();
-        textFile = new TextFile("t", TextFileType.HTML);
+        textFile = new TextFile(textFileName1, TextFileType.HTML);
+    }
+
+    @After
+    public void after() {
+        textFileManager.deleteAllTextFiles(true);
     }
 
     @Test
     public void testAddAndGet() {
         textFileManager.updateTextFile(textFile);
-        TextFile result = textFileManager.getTextFile("t");
+        TextFile result = textFileManager.getTextFile(textFileName1);
 
         assertNotNull(result);
-        assertTrue("t".equals(result.getTextFileName()));
+        assertTrue(textFileName1.equals(result.getTextFileName()));
         assertEquals(TextFileType.HTML, result.getTextFileType());
     }
 
@@ -49,7 +57,7 @@ public class TextFileManagerTest {
         testTextFile = textFileManager.getTextFile(textFile.getTextFileName());
         assertNull(testTextFile);
 
-        textFile = new TextFile("t", TextFileType.HTML);
+        textFile = new TextFile(textFileName1, TextFileType.HTML);
         textFileManager.updateTextFile(textFile);
         testTextFile = textFileManager.getTextFile(textFile.getTextFileName());
         assertNotNull(testTextFile);
@@ -68,7 +76,7 @@ public class TextFileManagerTest {
         assertEquals(1, textFileManager.getAllTextFiles(true).size());
         assertEquals(0, textFileManager.getAllTextFiles(false).size());
 
-        TextFile secondTextFile = new TextFile("n", TextFileType.HTML);
+        TextFile secondTextFile = new TextFile(textFileName2, TextFileType.HTML);
         textFileManager.updateTextFile(secondTextFile);
         assertEquals(2, textFileManager.getAllTextFiles(true).size());
         assertEquals(1, textFileManager.getAllTextFiles(false).size());
@@ -77,12 +85,22 @@ public class TextFileManagerTest {
         assertEquals(2, textFileManager.getAllTextFiles(true).size());
         assertEquals(0, textFileManager.getAllTextFiles(false).size());
 
-        textFileManager.undeleteTextFile("n");
+        textFileManager.undeleteTextFile(textFileName2);
         assertEquals(2, textFileManager.getAllTextFiles(true).size());
         assertEquals(1, textFileManager.getAllTextFiles(false).size());
 
-        textFileManager.deleteTextFile("t", true);
+        textFileManager.deleteTextFile(textFileName1, true);
         assertEquals(1, textFileManager.getAllTextFiles(true).size());
         assertEquals(1, textFileManager.getAllTextFiles(false).size());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testUndeleteUnexistingTextfile() {
+        textFileManager.undeleteTextFile(textFileName1);
+    }
+
+    @Test
+    public void testGetUnexistingTextfile() {
+        assertNull(textFileManager.getTextFile(textFileName1));
     }
 }

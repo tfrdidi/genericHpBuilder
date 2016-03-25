@@ -12,24 +12,22 @@ import java.util.Collection;
 public class TextFileManager extends ObjectManager{
 
     /**
-     * Adds or modifies a text file
-     */
-    public void updateTextFile(TextFile newTextFile) {
-        deleteObjects(TextFile.class, "textFileName", newTextFile.getTextFileName());
-        writeObject(newTextFile);
-    }
-
-    /**
-     * Returns a specific text file or null if it does not exist or was deleted.
+     * Returns a specific text file or null if it does not exist or was marked deleted.
      */
     public TextFile getTextFile(String textFileName) {
         return doGetTextFile(textFileName, false);
     }
 
+    /**
+     * Returns a specific text file or null if it does not exist or was physically deleted.
+     */
     public TextFile getTextFile(String textFileName, boolean includingDeletedTextFile) {
         return doGetTextFile(textFileName, includingDeletedTextFile);
     }
 
+    /**
+     * Worker method to actually read a text file
+     */
     private TextFile doGetTextFile(String textFileName, boolean includingDeletedTextFile) {
         TextFile result =  readObject(TextFile.class, TextFile.PROPERTY_TEXT_FILE_NAME, textFileName);
         if(result != null) {
@@ -55,18 +53,23 @@ public class TextFileManager extends ObjectManager{
         return result;
     }
 
+
+
+    /**
+     * Adds or modifies a text file
+     */
+    public void updateTextFile(TextFile newTextFile) {
+        deleteObjects(TextFile.class, "textFileName", newTextFile.getTextFileName());
+        writeObject(newTextFile);
+    }
+
+
+
     /**
      * Marks a text file as deleted. This does not deletes it from the datastore.
      */
     public void deleteTextFile(String textFileName) {
         setTextFileDeleted(textFileName, true);
-    }
-
-    /**
-     * Marks a text file undeleted that already has been marked as deleted
-     */
-    public void undeleteTextFile(String textFileName) {
-        setTextFileDeleted(textFileName, false);
     }
 
     /**
@@ -107,5 +110,14 @@ public class TextFileManager extends ObjectManager{
             }
             updateObjects(allUndeletedTextFiles);
         }
+    }
+
+
+
+    /**
+     * Marks a text file undeleted that already has been marked as deleted
+     */
+    public void undeleteTextFile(String textFileName) {
+        setTextFileDeleted(textFileName, false);
     }
 }
