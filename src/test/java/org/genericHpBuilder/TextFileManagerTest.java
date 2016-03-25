@@ -9,8 +9,6 @@ import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 
-import java.util.Collection;
-
 import static org.junit.Assert.*;
 
 /**
@@ -58,37 +56,33 @@ public class TextFileManagerTest {
     }
 
     @Test
-    public void testGetAllTextFiles() {
-        Collection<TextFile> allTextFiles = textFileManager.getAllTextFiles(true);
-        assertEquals(0, allTextFiles.size());
-
-        allTextFiles = textFileManager.getAllTextFiles(false);
-        assertEquals(0, allTextFiles.size());
+    public void testTextFileWorkflow() {
+        assertEquals(0, textFileManager.getAllTextFiles(true).size());
+        assertEquals(0, textFileManager.getAllTextFiles(false).size());
 
         textFileManager.updateTextFile(textFile);
-
-        allTextFiles = textFileManager.getAllTextFiles(true);
-        assertEquals(1, allTextFiles.size());
-
-        TextFile testTextFile = textFileManager.getTextFile(textFile.getTextFileName());
-        allTextFiles = textFileManager.getAllTextFiles(false);
-        assertEquals(1, allTextFiles.size());
+        assertEquals(1, textFileManager.getAllTextFiles(true).size());
+        assertEquals(1, textFileManager.getAllTextFiles(false).size());
 
         textFileManager.deleteTextFile(textFile.getTextFileName());
-
-        allTextFiles = textFileManager.getAllTextFiles(true);
-        assertEquals(1, allTextFiles.size());
-
-        allTextFiles = textFileManager.getAllTextFiles(false);
-        assertEquals(0, allTextFiles.size());
+        assertEquals(1, textFileManager.getAllTextFiles(true).size());
+        assertEquals(0, textFileManager.getAllTextFiles(false).size());
 
         TextFile secondTextFile = new TextFile("n", TextFileType.HTML);
         textFileManager.updateTextFile(secondTextFile);
+        assertEquals(2, textFileManager.getAllTextFiles(true).size());
+        assertEquals(1, textFileManager.getAllTextFiles(false).size());
 
-        allTextFiles = textFileManager.getAllTextFiles(true);
-        assertEquals(2, allTextFiles.size());
+        textFileManager.deleteAllTextFiles(false);
+        assertEquals(2, textFileManager.getAllTextFiles(true).size());
+        assertEquals(0, textFileManager.getAllTextFiles(false).size());
 
-        allTextFiles = textFileManager.getAllTextFiles(false);
-        assertEquals(1, allTextFiles.size());
+        textFileManager.undeleteTextFile("n");
+        assertEquals(2, textFileManager.getAllTextFiles(true).size());
+        assertEquals(1, textFileManager.getAllTextFiles(false).size());
+
+        textFileManager.deleteTextFile("t", true);
+        assertEquals(1, textFileManager.getAllTextFiles(true).size());
+        assertEquals(1, textFileManager.getAllTextFiles(false).size());
     }
 }

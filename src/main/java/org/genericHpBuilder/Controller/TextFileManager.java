@@ -23,13 +23,21 @@ public class TextFileManager extends ObjectManager{
      * Returns a specific text file or null if it does not exist or was deleted.
      */
     public TextFile getTextFile(String textFileName) {
+        return doGetTextFile(textFileName, false);
+    }
+
+    public TextFile getTextFile(String textFileName, boolean includingDeletedTextFile) {
+        return doGetTextFile(textFileName, includingDeletedTextFile);
+    }
+
+    private TextFile doGetTextFile(String textFileName, boolean includingDeletedTextFile) {
         TextFile result =  readObject(TextFile.class, TextFile.PROPERTY_TEXT_FILE_NAME, textFileName);
-        if(result != null && !result.isDeleted()) {
-            return result;
+        if(result != null) {
+            if(includingDeletedTextFile || !result.isDeleted()) {
+                return result;
+            }
         }
-        else {
-            return null;
-        }
+        return null;
     }
 
     /**
@@ -51,12 +59,53 @@ public class TextFileManager extends ObjectManager{
      * Marks a text file as deleted. This does not deletes it from the datastore.
      */
     public void deleteTextFile(String textFileName) {
-        TextFile textFile = getTextFile(textFileName);
+        setTextFileDeleted(textFileName, true);
+    }
+
+    /**
+     * Marks a text file undeleted that already has been marked as deleted
+     */
+    public void undeleteTextFile(String textFileName) {
+        setTextFileDeleted(textFileName, false);
+    }
+
+    /**
+     * Worker method to actually change the delete status of a text file
+     */
+    private void setTextFileDeleted(String textFileName, boolean deleted) {
+        TextFile textFile = getTextFile(textFileName, true);
         if (textFile == null)
             throw new IllegalArgumentException("No such text file known.");
 
-        textFile.setDeleted(true);
+        textFile.setDeleted(deleted);
         updateTextFile(textFile);
     }
 
+    /**
+     * Either marks a text file as deleted or completely deletes it from the datastore.
+     */
+    public void deleteTextFile(String textFileName, boolean deletePhysically) {
+        if(deletePhysically) {
+            deleteObjects(TextFile.class, "textFileName", textFileName);
+        }
+        else {
+            deleteTextFile(textFileName);
+        }
+    }
+
+    /**
+     * Deletes all text files, either physically or marks them only as deleted
+     */
+    public void deleteAllTextFiles(boolean deletePhysically) {
+        if(deletePhysically) {
+            deleteAllObjects(TextFile.class);
+        }
+        else {
+            Collection<TextFile> allUndeletedTextFiles = getAllTextFiles(false);
+            for (TextFile textFile: allUndeletedTextFiles) {
+                textFile.setDeleted(true);
+            }
+            updateObjects(allUndeletedTextFiles);
+        }
+    }
 }

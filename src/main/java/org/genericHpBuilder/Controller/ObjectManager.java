@@ -27,15 +27,6 @@ public abstract class ObjectManager {
 	}
 
 	/**
-	 *
-	 */
-	protected void assertIsNonNullArgument(Object arg, String label) {
-		if (arg == null) {
-			throw new IllegalArgumentException(label + " should not be null");
-		}
-	}
-
-	/**
 	 * Reads the first Entity with the given key in the Datastore
 	 */
 	protected <E> E readObject(Class<E> type, String id) throws IllegalArgumentException {
@@ -92,6 +83,8 @@ public abstract class ObjectManager {
 		result.addAll(objects);
 	}
 
+
+
 	/**
 	 * Updates all entities of the given collection in the datastore.
 	 */
@@ -109,6 +102,15 @@ public abstract class ObjectManager {
 	}
 
 	/**
+	 * Updates all dependencies of the object.
+	 */
+	protected void updateDependents(Persistent object) {
+		// overwrite if your object has additional dependencies
+	}
+
+
+
+	/**
 	 * Writes the given entity to the datastore.
 	 */
 	protected void writeObject(Persistent object) {
@@ -124,12 +126,7 @@ public abstract class ObjectManager {
 		}
 	}
 
-	/**
-	 * Updates all dependencies of the object.
-	 */
-	protected void updateDependents(Persistent object) {
-		// overwrite if your object has additional dependencies
-	}
+
 
 	/**
 	 * Deletes the given entity from the datastore.
@@ -155,6 +152,26 @@ public abstract class ObjectManager {
 		List<com.googlecode.objectify.Key<E>> keys = OfyService.ofy().load().type(type).
 				filter(propertyName, value).keys().list();
 		OfyService.ofy().delete().keys(keys);
+	}
+
+	/**
+	 * Deletes all Objects of the specified type.
+	 */
+	protected <E> void deleteAllObjects(Class<E> type) {
+		assertIsNonNullArgument(type, "type");
+		log.info("Datastore: delete all entities of type " + type);
+		List<com.googlecode.objectify.Key<E>> keys = OfyService.ofy().load().type(type).keys().list();
+		OfyService.ofy().delete().keys(keys);
+	}
+
+
+	/**
+	 *
+	 */
+	protected void assertIsNonNullArgument(Object arg, String label) {
+		if (arg == null) {
+			throw new IllegalArgumentException(label + " should not be null");
+		}
 	}
 
 }
