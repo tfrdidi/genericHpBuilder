@@ -1,8 +1,8 @@
 package org.genericHpBuilder.Controller;
 
-import com.sun.istack.internal.NotNull;
 import org.genericHpBuilder.Model.TextFile;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 

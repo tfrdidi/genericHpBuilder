@@ -3,6 +3,16 @@
          xmlns="http://java.sun.com/xml/ns/javaee"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
+
+    <servlet>
+        <servlet-name>editHtml</servlet-name>
+        <servlet-class>org.genericHpBuilder.Servlet.EditHtmlServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>editHtml</servlet-name>
+        <url-pattern>/edit/html/*</url-pattern>
+    </servlet-mapping>
+
     <servlet>
         <servlet-name>textFile</servlet-name>
         <servlet-class>org.genericHpBuilder.Servlet.TextFileServlet</servlet-class>

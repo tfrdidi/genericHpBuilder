@@ -28,6 +28,8 @@ dependencies {
     compile 'javax.servlet:servlet-api:2.5' // GAE works with only with 2.5
     compile 'com.googlecode.objectify:objectify:5.1.10'
     compile 'org.slf4j:slf4j-jdk14:1.7.12'
+    compile 'javax.validation:validation-api:1.1.0.Final'
+
 
     // testing dependencies
     testCompile 'com.google.appengine:appengine-testing:' + gaeVersion
