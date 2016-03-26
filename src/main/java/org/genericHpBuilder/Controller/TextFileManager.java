@@ -1,5 +1,6 @@
 package org.genericHpBuilder.Controller;
 
+import com.sun.istack.internal.NotNull;
 import org.genericHpBuilder.Model.TextFile;
 
 import java.util.ArrayList;
@@ -14,14 +15,14 @@ public class TextFileManager extends ObjectManager{
     /**
      * Returns a specific text file or null if it does not exist or was marked deleted.
      */
-    public TextFile getTextFile(String textFileName) {
+    public TextFile getTextFile(@NotNull String textFileName) {
         return doGetTextFile(textFileName, false);
     }
 
     /**
      * Returns a specific text file or null if it does not exist or was physically deleted.
      */
-    public TextFile getTextFile(String textFileName, boolean includingDeletedTextFile) {
+    public TextFile getTextFile(@NotNull String textFileName, boolean includingDeletedTextFile) {
         return doGetTextFile(textFileName, includingDeletedTextFile);
     }
 
@@ -58,7 +59,7 @@ public class TextFileManager extends ObjectManager{
     /**
      * Adds or modifies a text file
      */
-    public void updateTextFile(TextFile newTextFile) {
+    public void updateTextFile(@NotNull TextFile newTextFile) {
         deleteObjects(TextFile.class, "textFileName", newTextFile.getTextFileName());
         writeObject(newTextFile);
     }
@@ -68,14 +69,14 @@ public class TextFileManager extends ObjectManager{
     /**
      * Marks a text file as deleted. This does not deletes it from the datastore.
      */
-    public void deleteTextFile(String textFileName) {
+    public void deleteTextFile(@NotNull String textFileName) {
         setTextFileDeleted(textFileName, true);
     }
 
     /**
      * Worker method to actually change the delete status of a text file
      */
-    private void setTextFileDeleted(String textFileName, boolean deleted) {
+    private void setTextFileDeleted(@NotNull String textFileName, boolean deleted) {
         TextFile textFile = getTextFile(textFileName, true);
         if (textFile == null)
             throw new IllegalArgumentException("No such text file known.");
@@ -87,7 +88,7 @@ public class TextFileManager extends ObjectManager{
     /**
      * Either marks a text file as deleted or completely deletes it from the datastore.
      */
-    public void deleteTextFile(String textFileName, boolean deletePhysically) {
+    public void deleteTextFile(@NotNull String textFileName, boolean deletePhysically) {
         if(deletePhysically) {
             deleteObjects(TextFile.class, "textFileName", textFileName);
         }
@@ -117,7 +118,7 @@ public class TextFileManager extends ObjectManager{
     /**
      * Marks a text file undeleted that already has been marked as deleted
      */
-    public void undeleteTextFile(String textFileName) {
+    public void undeleteTextFile(@NotNull String textFileName) {
         setTextFileDeleted(textFileName, false);
     }
 }
